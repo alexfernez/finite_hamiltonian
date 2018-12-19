@@ -1,0 +1,38 @@
+// Alex Fernez, 2018
+
+Simply to explain the contents of this folder: Eigen contains the linear algebra functionality needed to solve the eigenvalue equation
+for the Matrix Hamiltonian that is set up according to the Wu, Lee, Thomas, and Young paper in Matrix_Hamiltonian.cpp. The header file
+contains the class definitions and the functionality that is available to the user, with some comments to indicate possibly non-obvious
+things.
+
+To illustrate an expected use of the Matrix Hamiltonian implementation, see the code in the Matrix_Hamiltonian.cpp main() function that
+is commented out. The user is asked to provide a set of bare states, a set of two-particle-channels for a given scattering reaction, and
+then set the number of momenta they want to consider and the length of the finite box to consider the reaction within. After this,
+everything is taken care of when the user creates a Hamiltonian object; all elements of the Hamiltonian are automatically set and the
+eigenvalues and eigenvectors are computed and stored in the Hamiltonian object. In order to see the results for the given parameters,
+functions are defined within the header file that allow the user to see the contents of the Hamiltonian object.
+
+Further, the Hamiltonian constructor also allows the possibility of inputting two user-defined potentials as the 5th and 6th parameters- for the
+vertex interaction and two-particle two-particle interaction, respectively. Hopefully, this will ease the process of trying to fit the model
+and verify the constants that the paper proposes. If these values are not used, currently the default potentials are set to be used for the
+pipi scattering, 1b2c reaction considered in the paper by Wu, Lee, Thomas, and Young.
+Hopefully also to ease the process of fitting the model proposed by the paper: when the user creates a Hamiltonian object, they have the option
+to "set" (or, really, reset) n, L, the set of bare states used, the set of two particle channels used, the vertex interaction potential used, or
+the two-particle two-particle interaction used. When one of these "set" functions is called, everything in the Hamiltonian- its element, eigenvalues,
+etc- is automatically recalculated. Without knowing exactly what process is to be used for fitting the model, this is all the functionality I could
+think of adding to the program.
+
+In order to consider more than just the pipi scattering that the paper explores, the user will just have to define new g and v potential functions.
+Everything else in the program should work if these functions are provided (assuming they are created with the right forms-- see the typedefs in the
+header file defining g_func and v_func types).
+
+
+
+Possible future considerations:
+In order to calculate the energy associated with what the Australians' papers call discrete states, in Matrix_Hamiltonian.cpp I have defined a
+discrete state class. This class's fields include the masses of the two particles used to define the state and the magnitude of the momentum of
+each particle (quantized since we are on a lattice, equal and opposite since we are working in the CM frame, and stored in terms of a variable n,
+where k=sqrt(n)*2pi/L). Then, when I define the functions that return the energies associated with the discrete state, I multiply the value of k
+by h_bar*c (so that it equals pc) in order that E = sqrt((mc^2)^2 + (pc)^2) is correctly satisfied. Though, I am not sure if this is right.
+The paper works entirely in natural units (h_bar=c=1), but I think that in order to get a correct value for E (in MeV) I need to perform this
+multiplication. It is important to change this in the implementation if this is not the correct thing to do, however.
